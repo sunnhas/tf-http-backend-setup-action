@@ -1,3 +1,4 @@
+### Node ###
 # Dependency directory
 node_modules
 
@@ -97,3 +98,15 @@ Thumbs.db
 # Ignore built ts files
 __tests__/runner/*
 lib/**/*
+
+### Intellij ###
+*.iml
+modules.xml
+*.ipr
+
+# Idea shared configuration
+.idea/*
+!.idea/runConfigurations
+!.idea/runConfigurations/*.xml
+!.idea/codeStyles
+!.idea/codeStyles/*.xml

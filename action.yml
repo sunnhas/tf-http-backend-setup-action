@@ -1,11 +1,18 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'tf-http-backend-setup'
+description: 'Configures the tf-http-backend tool to run within Github Actions'
+
+author: 'sunnhas'
+
 inputs:
-  milliseconds: # change this
-    required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+  version:
+    description: 'The version of the tf-http-backend CLI'
+    required: false
+    default: 'latest'
+  token:
+    description: 'The GitHub token used to create an authenticated client'
+    default: ${{ github.token }}
+    required: false
+
 runs:
   using: 'node16'
   main: 'dist/index.js'

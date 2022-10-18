@@ -1,16 +1,31 @@
 import * as core from '@actions/core'
-import {wait} from './wait'
+import * as OS from './process/os'
+import * as Arch from './process/arch'
+import {Tool} from './tool'
+import {getConfig} from './config'
+import {Repository} from './repository'
 
 async function run(): Promise<void> {
   try {
-    const ms: string = core.getInput('milliseconds')
-    core.debug(`Waiting ${ms} milliseconds ...`) // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
+    const config = getConfig()
 
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
+    const version = await Repository.getVersionTag(config.version)
+    core.info(`Version: ${version}`)
 
-    core.setOutput('time', new Date().toTimeString())
+    const os = OS.parseOS(process.platform)
+    const arch = Arch.parseArch(process.arch)
+    core.info(`Platform: ${os}/${arch}`)
+
+    let toolPath = Tool.find(version, arch)
+    if (toolPath) {
+      core.info(`Tool is found in cache at ${toolPath}`)
+    } else {
+      toolPath = await Tool.download(os, arch, version)
+    }
+
+    core.addPath(toolPath)
+
+    await Tool.test()
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   }
